@@ -9,6 +9,7 @@ int main( int argc, char** argv ){
 	********************/
 	int soundStream_Input_DeviceId = -1;
 	int soundStream_Output_DeviceId = -1;
+	int Cam_id = -1;
 
 	/********************
 	********************/
@@ -16,6 +17,7 @@ int main( int argc, char** argv ){
 	printf("> parameters\n");
 	printf("\t-i:Audio in(-1)\n");
 	printf("\t-o:Audio out(-1)\n");
+	printf("\t-c:camera(-1)\n");
 	printf("---------------------------------\n");
 	
 	for(int i = 1; i < argc; i++){
@@ -23,8 +25,10 @@ int main( int argc, char** argv ){
 			if(i+1 < argc) soundStream_Input_DeviceId = atoi(argv[i+1]);
 		}else if( strcmp(argv[i], "-o") == 0 ){
 			if(i+1 < argc) soundStream_Output_DeviceId = atoi(argv[i+1]);
+		}else if( strcmp(argv[i], "-c") == 0 ){
+			if(i+1 < argc) Cam_id = atoi(argv[i+1]);
 		}
 	}
 	
-	ofRunApp(new ofApp(soundStream_Input_DeviceId, soundStream_Output_DeviceId));
+	ofRunApp(new ofApp(soundStream_Input_DeviceId, soundStream_Output_DeviceId, Cam_id));
 }

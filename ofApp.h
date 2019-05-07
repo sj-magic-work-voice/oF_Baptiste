@@ -103,6 +103,8 @@ private:
 		
 		GRAPH__FFT,
 		
+		GRAPH__CAM,
+		
 		NUM_GRAPHS,
 	};
 	
@@ -137,6 +139,8 @@ private:
 		ofPoint(1120, 260),
 		
 		ofPoint(1120, 480),
+		
+		ofPoint(390, 40),
 	};
 	ofVec2f Fbo_DispSize[NUM_GRAPHS] = {
 		ofVec2f(FBO_LIST_WIDTH, FBO_LIST_HEIGHT),
@@ -155,6 +159,8 @@ private:
 		ofVec2f(FBO_LIST_WIDTH * 2, FBO_LIST_HEIGHT),
 
 		ofVec2f(FBO_LIST_WIDTH * 2, FBO_LIST_HEIGHT),
+		
+		ofVec2f(FBO_LIST_WIDTH, FBO_LIST_HEIGHT),
 	};
 	
 	STATE_CONTENTS StateContents;
@@ -195,6 +201,11 @@ private:
 	
 	/********************
 	********************/
+	ofVideoGrabber *VideoCam;
+	int Cam_id;
+	
+	/********************
+	********************/
 	ofShader shader_Or;
 	ofShader shader_And;
 	ofShader shader_Or_And;
@@ -230,12 +241,14 @@ private:
 	void draw_AllFbo();
 	void draw_Fbo_inTransition(float now);
 	void Change_ActiveContents(int _ActiveContents_id);
-
+	
+	void setup_Camera();
+	void drawFbo_Camera();
 	
 public:
 	/****************************************
 	****************************************/
-	ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId);
+	ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId, int _Cam_id);
 	~ofApp();
 	
 	void exit();

@@ -30,6 +30,11 @@ enum{
 };
 
 enum{
+	VIDEO_WIDTH = 1280,
+	VIDEO_HEIGHT = 720,
+};
+
+enum{
 	FBO_LIST_WIDTH	= 320,
 	FBO_LIST_HEIGHT	= 180,
 };
@@ -127,6 +132,9 @@ public:
 		ofxToggle b_Overlay_L;
 		ofxToggle b_Overlay_M;
 		ofxToggle b_Overlay_H;
+		
+	ofxGuiGroup Group_Color;
+		ofxColorSlider gui_VideoColor;
 		
 	
 	/****************************************

@@ -7,7 +7,7 @@
 
 /******************************
 ******************************/
-ofApp::ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId)
+ofApp::ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId, int _Cam_id)
 : fft_thread(THREAD_FFT::getInstance())
 , soundStream_Input_DeviceId(_soundStream_Input_DeviceId)
 , soundStream_Output_DeviceId(_soundStream_Output_DeviceId)
@@ -18,6 +18,8 @@ ofApp::ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId)
 , StateContents(CONTENTS_WHOLE)
 , t_ContentsChange(0)
 , d_ActiveContents_Transition(0.5)
+, VideoCam(NULL)
+, Cam_id(_Cam_id)
 {
 	/********************
 	********************/
@@ -37,6 +39,8 @@ ofApp::ofApp(int _soundStream_Input_DeviceId, int _soundStream_Output_DeviceId)
 ******************************/
 ofApp::~ofApp()
 {
+	if(VideoCam) delete VideoCam;
+	
 	if(fp_Log)			fclose(fp_Log);
 	if(fp_Log_main)		fclose(fp_Log_main);
 	if(fp_Log_Audio)	fclose(fp_Log_Audio);
@@ -149,6 +153,10 @@ void ofApp::setup(){
 	shader_contour.load( "shader/Contour.vert", "shader/Contour.frag" );
 	
 	/********************
+	********************/
+	setup_Camera();
+	
+	/********************
 	settings.setInListener(this);
 	settings.setOutListener(this);
 	settings.sampleRate = 44100;
@@ -158,6 +166,8 @@ void ofApp::setup(){
 	
 	soundStream.setup(settings);
 	********************/
+	printf("> soundstream\n");
+	fflush(stdout);
 	soundStream.printDeviceList();
 	
 	/********************
@@ -166,6 +176,39 @@ void ofApp::setup(){
 		これらのmethodは、fft_threadにaccessするので、start前にReStart()によって、fft_threadが初期化されていないと、不正accessが発生してしまう.
 	********************/
 	Reset_SoundStream();
+}
+
+
+/******************************
+******************************/
+void ofApp::setup_Camera()
+{
+	/********************
+	********************/
+	printf("> setup camera\n");
+	fflush(stdout);
+	
+	VideoCam = new ofVideoGrabber;
+	
+	ofSetLogLevel(OF_LOG_VERBOSE);
+    VideoCam->setVerbose(true);
+	
+	vector< ofVideoDevice > Devices = VideoCam->listDevices();// 上 2行がないと、List表示されない.
+	
+	if(Cam_id == -1){
+		// std::exit(1);
+		return;
+	}else{
+		if(Devices.size() <= Cam_id) { ERROR_MSG(); std::exit(1); }
+		
+		VideoCam->setDeviceID(Cam_id);
+		VideoCam->initGrabber(VIDEO_WIDTH, VIDEO_HEIGHT);
+		
+		printf("> Cam size asked = (%d, %d), actual = (%d, %d)\n", int(VIDEO_WIDTH), int(VIDEO_HEIGHT), int(VideoCam->getWidth()), int(VideoCam->getHeight()));
+		fflush(stdout);
+	}
+	
+	return;
 }
 
 /******************************
@@ -305,8 +348,42 @@ void ofApp::Clear_fbo(ofFbo& fbo)
 ******************************/
 void ofApp::update(){
 
+	/********************
+	********************/
 	fft_thread->update();
 	update_LMH_Range();
+	
+	/********************
+	********************/
+	if(Cam_id != -1){
+		VideoCam->update();
+		if(VideoCam->isFrameNew()) { drawFbo_Camera(); }
+	}
+}
+
+/******************************
+******************************/
+void ofApp::drawFbo_Camera()
+{
+	if(Cam_id == -1) return;
+	
+	fbo[GRAPH__CAM].begin();
+		/********************
+		********************/
+		// Clear with alpha, so we can capture via syphon and composite elsewhere should we want.
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		ofClear(0, 0, 0, 0);
+		
+		/********************
+		********************/
+		ofColor BaseColor = Gui_Global->gui_VideoColor;
+		ofSetColor(BaseColor);
+		// ofSetColor(255, 255, 255, 255);
+		
+		VideoCam->draw(0, 0, fbo[GRAPH__CAM].getWidth(), fbo[GRAPH__CAM].getHeight());
+	fbo[GRAPH__CAM].end();
 }
 
 /******************************
@@ -851,6 +928,10 @@ void ofApp::keyPressed(int key){
 			
 		case 'b':
 			Change_ActiveContents(11);
+			break;
+			
+		case 'c':
+			Change_ActiveContents(12);
 			break;
 			
 		case 'w':
