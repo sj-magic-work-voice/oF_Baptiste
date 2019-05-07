@@ -87,15 +87,16 @@ void GUI_GLOBAL::setup(string GuiName, string FileName, float x, float y)
 		Group_Overlay.add(b_Overlay_H.setup("H", true));
 	gui.add(&Group_Overlay);
 	
-	Group_Color.setup("Color");
+	Group_Camera.setup("Camera");
+		Group_Camera.add(b_Cam.setup("use", true));
 		{
 			ofColor initColor = ofColor(255, 255, 255, 255);
 			ofColor minColor = ofColor(0, 0, 0, 0);
 			ofColor maxColor = ofColor(255, 255, 255, 255);
 			
-			Group_Color.add(gui_VideoColor.setup("VideoColor", initColor, minColor, maxColor));
+			Group_Camera.add(gui_VideoColor.setup("VideoColor", initColor, minColor, maxColor));
 		}
-	gui.add(&Group_Color);
+	gui.add(&Group_Camera);
 
 
 	/********************

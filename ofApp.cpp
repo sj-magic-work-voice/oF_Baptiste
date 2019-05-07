@@ -355,9 +355,11 @@ void ofApp::update(){
 	
 	/********************
 	********************/
-	if(Cam_id != -1){
+	if((Gui_Global->b_Cam) && (Cam_id != -1)){
 		VideoCam->update();
 		if(VideoCam->isFrameNew()) { drawFbo_Camera(); }
+	}else{
+		Clear_fbo(fbo[GRAPH__CAM]);
 	}
 }
 
@@ -365,7 +367,7 @@ void ofApp::update(){
 ******************************/
 void ofApp::drawFbo_Camera()
 {
-	if(Cam_id == -1) return;
+	if((!Gui_Global->b_Cam) || (Cam_id == -1)) return;
 	
 	fbo[GRAPH__CAM].begin();
 		/********************

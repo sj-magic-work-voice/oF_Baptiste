@@ -133,7 +133,8 @@ public:
 		ofxToggle b_Overlay_M;
 		ofxToggle b_Overlay_H;
 		
-	ofxGuiGroup Group_Color;
+	ofxGuiGroup Group_Camera;
+		ofxToggle b_Cam;
 		ofxColorSlider gui_VideoColor;
 		
 	
