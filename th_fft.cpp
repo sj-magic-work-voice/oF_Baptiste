@@ -114,7 +114,7 @@ int THREAD_FFT::double_sort( const void * a , const void * b )
 ******************************/
 double THREAD_FFT::getFreq(int id)
 {
-	if(AUDIO_BUF_SIZE/2 <= id) return 0;
+	if( (id < 0) || (AUDIO_BUF_SIZE/2 <= id) ) return 0;
 	
 	double ret = 0;
 	
@@ -129,7 +129,7 @@ double THREAD_FFT::getFreq(int id)
 ******************************/
 double THREAD_FFT::getArrayVal(int id)
 {
-	if(AUDIO_BUF_SIZE/2 <= id) return 0;
+	if( (id < 0) || (AUDIO_BUF_SIZE/2 <= id) ) return 0;
 	
 	double ret = 0;
 	
@@ -144,7 +144,7 @@ double THREAD_FFT::getArrayVal(int id)
 ******************************/
 double THREAD_FFT::getArrayVal_x_DispGain(int id, float Gui_DispGain, float ScreenHeight, bool b_Clamp)
 {
-	if(AUDIO_BUF_SIZE/2 <= id) return 0;
+	if( (id < 0) || (AUDIO_BUF_SIZE/2 <= id) ) return 0;
 	
 	double ret = 0;
 	
@@ -159,7 +159,7 @@ double THREAD_FFT::getArrayVal_x_DispGain(int id, float Gui_DispGain, float Scre
 ******************************/
 double THREAD_FFT::getPhase(int id)
 {
-	if(AUDIO_BUF_SIZE/2 <= id) return 0;
+	if( (id < 0) || (AUDIO_BUF_SIZE/2 <= id) ) return 0;
 	
 	double ret = 0;
 	
